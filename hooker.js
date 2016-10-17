@@ -4,6 +4,7 @@
 
 var ENV = require('./street');
 
+var Init = require('./init');
 var Git = require('simple-git')();
 var program = require('commander');
 
@@ -21,5 +22,8 @@ program.parse(process.argv);
 
 if(program.feature){
     //console.log("Creating feature", ENV.jira +  program.feature);
-    Git.checkoutBranch(ENV.jira +  program.feature);
+    Git.checkout("-b" + ENV.jira +  program.feature);
 }
+
+Init();
+
