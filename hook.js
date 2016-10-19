@@ -2,7 +2,7 @@
  * Created by Lars on 17.10.2016.
  */
 
-var ENV = require('./street');
+var ENV = require('./hook-config');
 
 var Init = require('./init');
 var Git = require('simple-git')();
