@@ -5,6 +5,7 @@
   "main": "hooker.js",
   "dependencies": {
     "commander": "^2.9.0",
+    "jira-connector": "^2.4.0",
     "simple-git": "^1.54.0"
   },
   "devDependencies": {},
