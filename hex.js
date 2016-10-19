@@ -53,7 +53,15 @@ function checkout(id){
     }else{
         Git.checkout(id);
     }
+}
 
+function merge(id) {
+    var ex = /[0-9]+/.test(id);
+    if(ex){
+        Git.merge(ENV.project +  id);
+    }else{
+        Git.merge(id);
+    }
 }
 
 switch(CMD) {
@@ -62,5 +70,8 @@ switch(CMD) {
         break;
     case "go":
         checkout(VALUE);
+        break;
+    case "mg":
+        merge(VALUE);
         break;
 }
