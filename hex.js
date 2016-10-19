@@ -48,7 +48,6 @@ function feature(id) {
 
 function checkout(id){
     var ex = /[0-9]+/.test(id);
-    console.log(ex);
     if(ex){
         Git.checkout(ENV.project +  id);
     }else{
