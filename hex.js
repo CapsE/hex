@@ -4,10 +4,17 @@
 
 var JiraClient = require('jira-connector');
 
-
+var $PATH = process.cwd();
 var ENV = require('./hex-config');
+var local_env = require($PATH + '/hex-config');
+
+for(var key in local_env){
+    ENV[key] = local_env[key];
+}
+
 var CMD = process.argv[2] || "";
 var VALUE = process.argv[3] || "";
+
 
 var Git = require('simple-git')();
 var program = require('commander');
