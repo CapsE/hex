@@ -1,8 +1,6 @@
 /**
  * Created by Lars on 17.10.2016.
  */
- 
-#!/usr/bin/env node
 
 var JiraClient = require('jira-connector');
 
