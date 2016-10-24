@@ -1,8 +1,8 @@
 {
-  "name": "hooker",
+  "name": "hex",
   "version": "1.0.0",
   "description": "A git wrapper for web workflows",
-  "main": "hooker.js",
+  "main": "hex.js",
   "dependencies": {
     "commander": "^2.9.0",
     "jira-connector": "^2.4.0",
@@ -16,5 +16,9 @@
     "Git"
   ],
   "author": "Lars Krafft (CapsE)",
-  "license": "ISC"
+  "license": "ISC",
+  "preferGlobal": "true",
+  "bin":{
+    "hex":"./bin/hex"
+  }
 }
