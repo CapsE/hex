@@ -26,6 +26,15 @@ var Git = require('simple-git')();
 
 var program = require('commander');
 
+program
+    .version('0.0.1')
+    .option('-nj, --no-jira', 'Don\'t check for jira ticket');
+
+program.parse(process.argv);
+
+var CMD = program.args[0] || "";
+var VALUE = program.args[1] || "";
+
 try{
     var jira = new JiraClient( {
         host: ENV["jira-url"],
@@ -35,18 +44,9 @@ try{
         }
     });
 }catch(e){
+    program.nojira = true;
     console.log("Jira Connection not possible");
 }
-
-
-program
-    .version('0.0.1')
-    .option('-nj, --nojira', 'Don\'t check for jira ticket');
-
-program.parse(process.argv);
-
-var CMD = program.args[0] || "";
-var VALUE = program.args[1] || "";
 
 function feature(id) {
     if(program.nojira){
