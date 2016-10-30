@@ -30,6 +30,12 @@ var Git = require('simple-git')();
 
 var program = require('commander');
 
+program
+    .version('0.0.1')
+    .option('-nj, --no-jira', 'Don\'t check for jira ticket');
+
+program.parse(process.argv);
+
 try{
     var jira = new JiraClient( {
         host: ENV["jira-url"],
@@ -39,18 +45,8 @@ try{
         }
     });
 }catch(e){
+    program.nojira = true;
     console.log("Jira Connection not possible");
-}
-
-
-program
-    .version('0.0.1')
-    .option('-nj, --no-jira', 'Don\'t check for jira ticket');
-
-program.parse(process.argv);
-
-if(program.feature){
-    feature(program.feature);
 }
 
 function feature(id) {
