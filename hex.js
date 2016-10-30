@@ -3,6 +3,8 @@
  */
 
 var JiraClient = require('jira-connector');
+var fs = require('fs');
+var path = require('path')
 
 var $PATH = process.cwd();
 var ENV = require('./hex-config');
@@ -19,13 +21,18 @@ var VALUE = process.argv[3] || "";
 var Git = require('simple-git')();
 var program = require('commander');
 
-var jira = new JiraClient( {
-    host: ENV["jira-url"],
-    basic_auth: {
-        username: ENV["jira-user"],
-        password: ENV["jira-password"]
-    }
-});
+try{
+    var jira = new JiraClient( {
+        host: ENV["jira-url"],
+        basic_auth: {
+            username: ENV["jira-user"],
+            password: ENV["jira-password"]
+        }
+    });
+}catch(e){
+    console.log("Jira Connection not possible");
+}
+
 
 program
     .version('0.0.1')
@@ -71,6 +78,12 @@ function merge(id) {
     }
 }
 
+function config(pair){
+    var p = pair.split(":");
+    ENV[p[0]] = p[1];
+    fs.writeFile(path.resolve(__dirname, "hex-config.json"), JSON.stringify(ENV, null, ' '));
+}
+
 switch(CMD) {
     case "f":
         feature(VALUE);
@@ -81,4 +94,6 @@ switch(CMD) {
     case "mg":
         merge(VALUE);
         break;
+    case "config":
+        config(VALUE);
 }

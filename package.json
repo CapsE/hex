@@ -6,6 +6,7 @@
   "dependencies": {
     "commander": "^2.9.0",
     "jira-connector": "^2.4.0",
+    "prompt": "^1.0.0",
     "simple-git": "^1.54.0"
   },
   "devDependencies": {},
@@ -18,7 +19,7 @@
   "author": "Lars Krafft (CapsE)",
   "license": "ISC",
   "preferGlobal": "true",
-  "bin":{
-    "hex":"./bin/hex"
+  "bin": {
+    "hex": "./bin/hex"
   }
 }

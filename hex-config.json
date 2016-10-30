@@ -1,3 +1,6 @@
 {
-  "project":"TST-"
+  "project":"TST-",
+  "dev":"DEV",
+  "int":"INT",
+  "prod":"PROD"
 }
