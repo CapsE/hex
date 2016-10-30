@@ -25,6 +25,7 @@ var Git = require('simple-git')();
     Git.getLong = git.long;
     Git.getTag = git.tag;
     Git.getBranch = git.branch;
+    Git.getBanchList = git.branchList;
 })();
 
 var program = require('commander');
@@ -44,7 +45,7 @@ try{
 
 program
     .version('0.0.1')
-    .option('-f, --feature [name]', 'Create new feature');
+    .option('-nj, --no-jira', 'Don\'t check for jira ticket');
 
 program.parse(process.argv);
 
@@ -54,18 +55,27 @@ if(program.feature){
 
 function feature(id) {
     //console.log("Creating feature", ENV.jira +  program.feature);
-    console.log("Looking for ", ENV.project +  id);
-    jira.issue.getIssue({
-        issueKey: ENV.project +  id
-    }, function(error, issue) {
-        if(error){
-            console.log("Error: ", error);
-        }else{
+    if(program.noJira){
+        var ex = /[0-9]+/.test(id);
+        if(ex){
             Git.checkout("-b" + ENV.project +  id);
-            Git.branch("--edit-description" + issue.fields.summary);
-            console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
+        }else{
+            Git.checkout("-b" + id);
         }
-    });
+    }else{
+        console.log("Looking for ", ENV.project +  id);
+        jira.issue.getIssue({
+            issueKey: ENV.project +  id
+        }, function(error, issue) {
+            if(error){
+                console.log("Error: ", error);
+            }else{
+                Git.checkout("-b" + ENV.project +  id);
+                Git.branch("--edit-description" + issue.fields.summary);
+                console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
+            }
+        });
+    }
 }
 
 function checkout(id){
@@ -81,13 +91,16 @@ function merge(id) {
     Git.getBranch().then(function(b){
         var ex = /[0-9]+/.test(id);
         if(ex){
-            Git.mergeFromTo(ENV.project +  id, b, {}, function(err, log){
-              console.log("Error:", err);
-              console.log("Log:", log);
-            });
+            Git.mergeFromTo(ENV.project +  id, b);
         }else{
             Git.mergeFromTo(id, b);
         }
+    });
+}
+
+function branch(){
+    Git.getBanchList().then(function(list){
+       console.log(list);
     });
 }
 
@@ -106,6 +119,9 @@ switch(CMD) {
         break;
     case "mg":
         merge(VALUE);
+        break;
+    case "branch":
+        branch();
         break;
     case "config":
         config(VALUE);

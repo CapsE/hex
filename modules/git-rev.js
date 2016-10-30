@@ -31,6 +31,38 @@ module.exports = {
     , branch : function (cb) {
         return _command('git rev-parse --abbrev-ref HEAD', cb)
     }
+    , branchList : function (){
+
+        return new Promise(function(resolve, reject){
+            exec('git branch', function (err, stdout, stderr) {
+                if(err){
+                    reject(err);
+                }
+                var array = stdout.split('\n');
+                array.pop();
+                var reg = /\S+/;
+                for(var i = 0, y = array.length; i < y; i++ ){
+                    if(array[i].indexOf("*") != -1){
+                        var x = array[0];
+                        var rege = /(\* +)(\S+)/;
+                        var ex = rege.exec(array[i]);
+                        if(ex && ex[2]){
+                            array[0] = ex[2];
+                            array[i] = x;
+                        }
+
+                    }else{
+                        var ex = reg.exec(array[i]);
+                        if(ex && ex[0]){
+                            array[i] = ex[0];
+                        }
+                    }
+                }
+                resolve(array);
+            });
+        });
+
+    }
     , tag : function (cb) {
         return _command('git describe --always --tag --abbrev=0', cb)
     }
