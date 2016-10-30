@@ -19,6 +19,14 @@ var VALUE = process.argv[3] || "";
 
 
 var Git = require('simple-git')();
+(function(){
+    var git = require('./modules/git-rev');
+    Git.getShort = git.short;
+    Git.getLong = git.long;
+    Git.getTag = git.tag;
+    Git.getBranch = git.branch;
+})();
+
 var program = require('commander');
 
 try{
@@ -70,12 +78,17 @@ function checkout(id){
 }
 
 function merge(id) {
-    var ex = /[0-9]+/.test(id);
-    if(ex){
-        Git.merge(ENV.project +  id);
-    }else{
-        Git.merge(id);
-    }
+    Git.getBranch().then(function(b){
+        var ex = /[0-9]+/.test(id);
+        if(ex){
+            Git.mergeFromTo(ENV.project +  id, b, {}, function(err, log){
+              console.log("Error:", err);
+              console.log("Log:", log);
+            });
+        }else{
+            Git.mergeFromTo(id, b);
+        }
+    });
 }
 
 function config(pair){
