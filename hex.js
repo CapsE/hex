@@ -14,10 +14,6 @@ for(var key in local_env){
     ENV[key] = local_env[key];
 }
 
-var CMD = process.argv[2] || "";
-var VALUE = process.argv[3] || "";
-
-
 var Git = require('simple-git')();
 (function(){
     var git = require('./modules/git-rev');
@@ -45,17 +41,15 @@ try{
 
 program
     .version('0.0.1')
-    .option('-nj, --no-jira', 'Don\'t check for jira ticket');
+    .option('-nj, --nojira', 'Don\'t check for jira ticket');
 
 program.parse(process.argv);
 
-if(program.feature){
-    feature(program.feature);
-}
+var CMD = program.args[0] || "";
+var VALUE = program.args[1] || "";
 
 function feature(id) {
-    //console.log("Creating feature", ENV.jira +  program.feature);
-    if(program.noJira){
+    if(program.nojira){
         var ex = /[0-9]+/.test(id);
         if(ex){
             Git.checkout("-b" + ENV.project +  id);
@@ -125,4 +119,7 @@ switch(CMD) {
         break;
     case "config":
         config(VALUE);
+        break;
+    default:
+        console.log("Unknown Command");
 }
