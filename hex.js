@@ -144,8 +144,13 @@ function config(pair){
 function publish(target){
     Git.getBranch().then(function(b){
         if(target.toUpperCase() == ENV.prod.toUpperCase()){
-            Git.mergeFromTo(b , ENV.prod );
-            Git.push(ENV.prod);
+            console.log("Merging " + b + " into " + ENV.prod);
+            Git.mergeFromTo(b , ENV.prod ).then(function(){
+                console.log("pushing " + ENV.prod);
+                Git.push(ENV.prod);
+            });
+
+
         }else if(target.toUpperCase() == ENV.int.toUpperCase()){
             Git.mergeFromTo(b, ENV.int);
             Git.push(ENV.int);
