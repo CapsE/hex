@@ -40,23 +40,15 @@ module.exports = {
                 }
                 var array = stdout.split('\n');
                 array.pop();
-                var reg = /\S+/;
                 for(var i = 0, y = array.length; i < y; i++ ){
+                    array[i] = array[i].replace('  ','');
+
                     if(array[i].indexOf("*") != -1){
                         var x = array[0];
-                        var rege = /(\* +)(\S+)/;
-                        var ex = rege.exec(array[i]);
-                        if(ex && ex[2]){
-                            array[0] = ex[2];
-                            array[i] = x;
-                        }
-
-                    }else{
-                        var ex = reg.exec(array[i]);
-                        if(ex && ex[0]){
-                            array[i] = ex[0];
-                        }
+                        array[i] = x;
+                        array[0] = array[i].replace('* ','');
                     }
+
                 }
                 resolve(array);
             });

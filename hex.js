@@ -98,10 +98,51 @@ function branch(){
     });
 }
 
+function init(){
+    var branch;
+    Git.getBranch().then(function(b){
+        branch = b;
+        return Git.getBanchList();
+    }).then(function(list){
+        console.log("Setting up branches");
+        if(list.indexOf(ENV.dev) == -1){
+            Git.checkoutBranch(ENV.dev, "master");
+        }
+        if(list.indexOf(ENV.int) == -1){
+            Git.checkoutBranch(ENV.int, "master");
+        }
+        if(list.indexOf(ENV.prod) == -1){
+            Git.checkoutBranch(ENV.prod, "master");
+        }
+        Git.checkout(branch);
+        console.log("Setting up Git-Hooks");
+        fs.readdir(path.resolve(__dirname, "hooks"), (err, files) => {
+            files.forEach(file => {
+                console.log(file);
+                fs.createReadStream(__dirname + "/hooks/" + file)
+                    .pipe(fs.createWriteStream("./.git/" + "hooks/" + file));
+            });
+        });
+    });
+}
+
 function config(pair){
     var p = pair.split(":");
     ENV[p[0]] = p[1];
     fs.writeFile(path.resolve(__dirname, "hex-config.json"), JSON.stringify(ENV, null, ' '));
+}
+
+function publish(target){
+    Git.getBranch().then(function(b){
+        if(target.toUpperCase() == ENV.prod.toUpperCase()){
+            Git.mergeFromTo(b , ENV.prod );
+        }else if(target.toUpperCase() == ENV.int.toUpperCase()){
+            Git.mergeFromTo(b, ENV.int);
+        }else{
+            Git.mergeFromTo(b, ENV.dev);
+        }
+        Git.push();
+    });
 }
 
 switch(CMD) {
@@ -119,6 +160,12 @@ switch(CMD) {
         break;
     case "config":
         config(VALUE);
+        break;
+    case "init":
+        init();
+        break;
+    case "pub" || "publish":
+        publish(VALUE);
         break;
     default:
         console.log("Unknown Command");
