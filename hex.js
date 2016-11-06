@@ -148,10 +148,10 @@ function publish(target){
             Git.push(ENV.prod);
         }else if(target.toUpperCase() == ENV.int.toUpperCase()){
             Git.mergeFromTo(b, ENV.int);
-            Git.push(ENV.prod);
+            Git.push(ENV.int);
         }else{
             Git.mergeFromTo(b, ENV.dev);
-            Git.push(ENV.prod);
+            Git.push(ENV.dev);
         }
     });
 }
