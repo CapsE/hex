@@ -107,12 +107,15 @@ function init(){
         console.log("Setting up branches");
         if(list.indexOf(ENV.dev) == -1){
             Git.checkoutBranch(ENV.dev, "master");
+            Git.push("--set-upstream origin " + ENV.dev);
         }
         if(list.indexOf(ENV.int) == -1){
             Git.checkoutBranch(ENV.int, "master");
+            Git.push("--set-upstream origin " + ENV.int);
         }
         if(list.indexOf(ENV.prod) == -1){
             Git.checkoutBranch(ENV.prod, "master");
+            Git.push("--set-upstream origin " + ENV.prod);
         }
         Git.checkout(branch);
         console.log("Setting up Git-Hooks");
@@ -123,6 +126,12 @@ function init(){
                     .pipe(fs.createWriteStream("./.git/" + "hooks/" + file));
             });
         });
+    });
+}
+
+function test(v){
+    Git.getBranch().then(function(b){
+        Git.push("origin",b,["--set-upstream"]);
     });
 }
 
@@ -166,6 +175,9 @@ switch(CMD) {
         break;
     case "pub" || "publish":
         publish(VALUE);
+        break;
+    case "test":
+        test(VALUE);
         break;
     default:
         console.log("Unknown Command");
