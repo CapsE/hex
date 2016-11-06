@@ -145,12 +145,14 @@ function publish(target){
     Git.getBranch().then(function(b){
         if(target.toUpperCase() == ENV.prod.toUpperCase()){
             Git.mergeFromTo(b , ENV.prod );
+            Git.push(ENV.prod);
         }else if(target.toUpperCase() == ENV.int.toUpperCase()){
             Git.mergeFromTo(b, ENV.int);
+            Git.push(ENV.prod);
         }else{
             Git.mergeFromTo(b, ENV.dev);
+            Git.push(ENV.prod);
         }
-        Git.push();
     });
 }
 
@@ -182,3 +184,5 @@ switch(CMD) {
     default:
         console.log("Unknown Command");
 }
+
+//I was published :)
