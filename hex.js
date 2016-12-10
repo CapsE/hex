@@ -83,8 +83,10 @@ function feature(id) {
                 }else{
                     Git.checkout("-b" + ENV.project +  id);
                     Git.branch("--edit-description" + issue.fields.summary);
-                    transition("Approve");
-                    transition("Start");
+                    transition("Approve").then(function () {
+                        transition("Start");
+                    });
+
                     console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
                 }
             });
@@ -208,7 +210,7 @@ function assignIssue(person) {
 }
 
 function transition(key, msg, person){
-    Git.getBranch().then(function(b){
+    var promise = Git.getBranch().then(function(b){
         var params = {
             issueKey: b,
             transition:{
@@ -229,14 +231,18 @@ function transition(key, msg, person){
                 }
             }
         }
-        jira.issue.transitionIssue(params, function(error, issue) {
-            if(error){
-                console.log("Error: ", error);
-            }else{
-                console.log(issue);
-            }
+        return new Promise(function(reject, resolve){
+            jira.issue.transitionIssue(params, function(error, issue) {
+                if(error){
+                    reject(error);
+                }else{
+                    resolve(issue);
+                }
+            });
         });
+
     });
+    return promise;
 }
 
 switch(CMD) {
