@@ -1,6 +1,6 @@
 {
   "name": "hex",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A git wrapper for web workflows",
   "main": "hex.js",
   "dependencies": {
