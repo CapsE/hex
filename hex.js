@@ -1,5 +1,5 @@
 /**
- * Created by Lars on 17.10.2016. PROD
+ * Created by Lars on 17.10.2016. TAL-100
  */
 
 var JiraClient = require('jira-connector');
