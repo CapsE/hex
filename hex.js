@@ -234,18 +234,20 @@ function transition(input){
             }
         };
         if(msg){
-            params.update = {comment:[{
-                add: {
-                    body: "[hex] " + msg
-                }
-            }]};
+            params.update = {
+                comment:[{
+                    add: {
+                        body: "[hex] " + msg
+                    }
+                }]
+            };
         }
         if(person){
-            params.fields = {
+            params.fields = [{
                 assignee:{
                     name: person
                 }
-            }
+            }]
         }
         return new Promise(function(resolve, reject){
             jira.issue.transitionIssue(params, function(error, issue) {
