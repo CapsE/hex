@@ -220,7 +220,7 @@ function assignIssue(person) {
 
 function transition(input){
     var promise = Git.getBranch().then(function(b){
-        var b = b || input.branch;
+        var b = input.branch || b;
         var key = input.key;
         var person = input.person;
         var msg = input.msg;
