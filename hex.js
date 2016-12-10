@@ -38,7 +38,7 @@ var VALUE = program.args[1] || "";
 
 try{
     var jira = new JiraClient( {
-        host: ENV[jira-url],
+        host: ENV["jira-url"],
         basic_auth: {
             username: ENV["jira-user"],
             password: ENV["jira-password"]
@@ -46,7 +46,7 @@ try{
     });
 }catch(e){
     program.nojira = true;
-    console.log("Jira Connection not possible");
+    console.log("Jira Connection to " + ENV["jira-url"] + " not possible with user " + ENV["jira-user"]);
 }
 
 function feature(id) {
@@ -134,6 +134,18 @@ function init(){
 function test(v){
     Git.getBranch().then(function(b){
         Git.push("origin",b,["--set-upstream"]);
+    });
+}
+
+function testJira(){
+    jira.issue.getIssue({
+        issueKey: ENV.project +  id
+    }, function(error, issue) {
+        if(error){
+            console.log("Error: ", error);
+        }else{
+            console.log("Found Jira: ", ENV.project +  id + ":" + issue.fields.summary);
+        }
     });
 }
 
