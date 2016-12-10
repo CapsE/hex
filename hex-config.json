@@ -1,5 +1,6 @@
 {
   "project":"TAL-",
+  "project-owner":"kamilla.koch",
   "dev":"DEV",
   "int":"INT",
   "prod":"PROD",

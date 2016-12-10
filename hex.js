@@ -84,7 +84,7 @@ function feature(id) {
                     Git.checkout("-b" + ENV.project +  id);
                     Git.branch("--edit-description" + issue.fields.summary);
                     transition("Approve").then(function () {
-                        transition("Start");
+                        transition("Start", "Work started");
                     });
 
                     console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
@@ -168,6 +168,10 @@ function publish(target){
         Git.mergeFromTo(b, target);
         console.log("Merged " + b + " into " + target);
         Git.checkout(b);
+        Git.push(b);
+        if(target.toUpperCase() == ENV.dev.toUpperCase()){
+            transition("DeliverDEV", "Published to " + ENV.dev, ENV["project-owner"])
+        }
     });
 }
 
