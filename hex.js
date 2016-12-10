@@ -173,8 +173,7 @@ function publish(target){
             transition({
                 branch:b,
                 key:"DeliverDEV",
-                msg:"Published to " + ENV.dev,
-                person:ENV["project-owner"]
+                msg:"Published to " + ENV.dev
             }).catch(function (e) {
                 console.log(e);
             });
