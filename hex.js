@@ -83,8 +83,8 @@ function feature(id) {
                 }else{
                     Git.checkout("-b" + ENV.project +  id);
                     Git.branch("--edit-description" + issue.fields.summary);
-                    transition("Approve").then(function () {
-                        transition("Start", "Work started");
+                    transition({key:"Approve"}).then(function () {
+                        transition({key:"Start", msg:"Work started"});
                     });
 
                     console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
@@ -170,7 +170,12 @@ function publish(target){
         //Git.push(target);
         //Git.checkout(b);
         if(target== ENV.dev){
-            transition("DeliverDEV", "Published to " + ENV.dev, ENV["project-owner"])
+            transition({
+                branch:b,
+                key:"DeliverDEV",
+                msg:"Published to " + ENV.dev,
+                person:ENV["project-owner"]
+            });
         }
     });
 }
@@ -213,8 +218,13 @@ function assignIssue(person) {
     });
 }
 
-function transition(key, msg, person){
+function transition(input){
     var promise = Git.getBranch().then(function(b){
+        var b = b || input.branch;
+        var key = input.key;
+        var person = input.person;
+        var msg = input.msg;
+
         var params = {
             issueKey: b,
             transition:{
