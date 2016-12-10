@@ -83,6 +83,8 @@ function feature(id) {
                 }else{
                     Git.checkout("-b" + ENV.project +  id);
                     Git.branch("--edit-description" + issue.fields.summary);
+                    transition("Approve");
+                    transition("Start");
                     console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
                 }
             });
