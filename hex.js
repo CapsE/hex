@@ -174,7 +174,8 @@ function publish(target){
                 branch:b,
                 key:"DeliverDEV",
                 msg:"Published to " + ENV.dev,
-                person:ENV["project-owner"]
+            }).then(function () {
+              assignIssue(ENV["project-owner"]);
             }).catch(function (e) {
                 console.log(e);
             });
@@ -241,14 +242,6 @@ function transition(input){
                     }
                 }]
             };
-        }
-        //Comment
-        if(person){
-            params.fields = {
-                assignee:{
-                    name: person
-                }
-            }
         }
         return new Promise(function(resolve, reject){
             jira.issue.transitionIssue(params, function(error, issue) {
