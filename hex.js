@@ -22,6 +22,7 @@ var Git = require('simple-git')();
     Git.getTag = git.tag;
     Git.getBranch = git.branch;
     Git.getBanchList = git.branchList;
+    Git.command = git.command;
 })();
 
 var program = require('commander');
@@ -49,28 +50,29 @@ try{
 }
 
 function feature(id) {
-    checkout(ENV["prod"]);
-    if(program.nojira){
-        var ex = /[0-9]+/.test(id);
-        if(ex){
-            Git.checkout("-b" + ENV.project +  id);
-        }else{
-            Git.checkout("-b" + id);
-        }
-    }else{
-        console.log("Looking for ", ENV.project +  id);
-        jira.issue.getIssue({
-            issueKey: ENV.project +  id
-        }, function(error, issue) {
-            if(error){
-                console.log("Error: ", error);
-            }else{
+    Git.command("checkout", "PROD").then(function(){
+        if(program.nojira){
+            var ex = /[0-9]+/.test(id);
+            if(ex){
                 Git.checkout("-b" + ENV.project +  id);
-                Git.branch("--edit-description" + issue.fields.summary);
-                console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
+            }else{
+                Git.checkout("-b" + id);
             }
-        });
-    }
+        }else{
+            console.log("Looking for ", ENV.project +  id);
+            jira.issue.getIssue({
+                issueKey: ENV.project +  id
+            }, function(error, issue) {
+                if(error){
+                    console.log("Error: ", error);
+                }else{
+                    Git.checkout("-b" + ENV.project +  id);
+                    Git.branch("--edit-description" + issue.fields.summary);
+                    console.log("Created Branch for: ", ENV.project +  id + ":" + issue.fields.summary);
+                }
+            });
+        }
+    });
 }
 
 function checkout(id){

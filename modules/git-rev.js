@@ -64,4 +64,7 @@ module.exports = {
             cb(JSON.parse('[' + str + ']'));
         });
     }
+    , command : function(cmd, params){
+        return _command(cmd + " " + params);
+    }
 };
