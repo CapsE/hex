@@ -167,8 +167,8 @@ function publish(target){
         Git.checkout(target);
         Git.mergeFromTo(b, target);
         console.log("Merged " + b + " into " + target);
-        //Git.push(target);
-        //Git.checkout(b);
+        Git.push(target);
+        Git.checkout(b);
         if(target== ENV.dev){
             transition({
                 branch:b,
@@ -176,6 +176,26 @@ function publish(target){
                 msg:"Published to " + ENV.dev,
             }).then(function () {
               assignIssue(ENV["project-owner"], b);
+            }).catch(function (e) {
+                console.log(e);
+            });
+        }else if(target == ENV.int){
+            transition({
+                branch:b,
+                key:"DeliverINT",
+                msg:"Published to " + ENV.int,
+            }).then(function () {
+                assignIssue(ENV["project-owner"], b);
+            }).catch(function (e) {
+                console.log(e);
+            });
+        }else if(target == ENV.prod){
+            transition({
+                branch:b,
+                key:"DeliverPROD",
+                msg:"Published to " + ENV.prod,
+            }).then(function () {
+                assignIssue(ENV["project-owner"], b);
             }).catch(function (e) {
                 console.log(e);
             });
