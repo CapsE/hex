@@ -175,7 +175,7 @@ function publish(target){
                 key:"DeliverDEV",
                 msg:"Published to " + ENV.dev,
             }).then(function () {
-              assignIssue(ENV["project-owner"]);
+              assignIssue(ENV["project-owner"], b);
             }).catch(function (e) {
                 console.log(e);
             });
@@ -197,7 +197,7 @@ function info() {
     });
 }
 
-function assignIssue(person) {
+function assignIssue(person, issue) {
     if(!person){
         person = ENV["project-owner"];
     }
@@ -207,6 +207,7 @@ function assignIssue(person) {
     }
 
     Git.getBranch().then(function(b){
+        var b = issue || b;
         jira.issue.assignIssue({
             issueKey: b,
             assignee: person
