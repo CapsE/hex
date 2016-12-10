@@ -132,9 +132,7 @@ function init(){
 }
 
 function test(v){
-    Git.getBranch().then(function(b){
-        Git.push("origin",b,["--set-upstream"]);
-    });
+    console.log("Testing...");
 }
 
 function testJira(){
