@@ -1,5 +1,5 @@
 {
-  "name": "hex",
+  "name": "hex-client",
   "version": "1.0.2",
   "description": "A git wrapper for web workflows",
   "main": "hex.js",
