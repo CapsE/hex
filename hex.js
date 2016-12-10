@@ -156,7 +156,7 @@ function config(pair){
 function publish(target){
     Git.getBranch().then(function(b){
         Git.checkout(target);
-        Git.merge(b);
+        Git.mergeFromTo(b, target);
         console.log("Merged " + b + " into " + target);
         Git.checkout(b);
     });
