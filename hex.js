@@ -155,21 +155,10 @@ function config(pair){
 
 function publish(target){
     Git.getBranch().then(function(b){
-        if(target.toUpperCase() == ENV.prod.toUpperCase()){
-            console.log("Merging " + b + " into " + ENV.prod);
-            Git.mergeFromTo(b , ENV.prod ).then(function(){
-                console.log("pushing " + ENV.prod);
-                Git.push(ENV.prod);
-            });
-
-
-        }else if(target.toUpperCase() == ENV.int.toUpperCase()){
-            Git.mergeFromTo(b, ENV.int);
-            Git.push(ENV.int);
-        }else{
-            Git.mergeFromTo(b, ENV.dev);
-            Git.push(ENV.dev);
-        }
+        Git.checkout(target);
+        Git.merge(b);
+        console.log("Merged " + b + " into " + target);
+        Git.checkout(b);
     });
 }
 
