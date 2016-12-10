@@ -1,5 +1,5 @@
 /**
- * Created by Lars on 17.10.2016. DEV
+ * Created by Lars on 17.10.2016. PROD
  */
 
 var JiraClient = require('jira-connector');
