@@ -175,6 +175,8 @@ function publish(target){
                 key:"DeliverDEV",
                 msg:"Published to " + ENV.dev,
                 person:ENV["project-owner"]
+            }).catch(function (e) {
+                console.log(e);
             });
         }
     });
