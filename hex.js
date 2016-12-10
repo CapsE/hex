@@ -231,7 +231,7 @@ function transition(key, msg, person){
                 }
             }
         }
-        return new Promise(function(reject, resolve){
+        return new Promise(function(resolve, reject){
             jira.issue.transitionIssue(params, function(error, issue) {
                 if(error){
                     reject(error);
