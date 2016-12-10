@@ -173,7 +173,8 @@ function publish(target){
             transition({
                 branch:b,
                 key:"DeliverDEV",
-                msg:"Published to " + ENV.dev
+                msg:"Published to " + ENV.dev,
+                person:ENV["project-owner"]
             }).catch(function (e) {
                 console.log(e);
             });
@@ -242,11 +243,11 @@ function transition(input){
             };
         }
         if(person){
-            params.fields = [{
+            params.fields = {
                 assignee:{
                     name: person
                 }
-            }]
+            }
         }
         return new Promise(function(resolve, reject){
             jira.issue.transitionIssue(params, function(error, issue) {
