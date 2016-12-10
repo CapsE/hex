@@ -22,6 +22,7 @@ var Git = require('simple-git')();
     Git.getTag = git.tag;
     Git.getBranch = git.branch;
     Git.getBanchList = git.branchList;
+    Git.command = git.command;
 })();
 
 var program = require('commander');
@@ -37,7 +38,7 @@ var VALUE = program.args[1] || "";
 
 try{
     var jira = new JiraClient( {
-        host: ENV[jira-url],
+        host: ENV["jira-url"],
         basic_auth: {
             username: ENV["jira-user"],
             password: ENV["jira-password"]
@@ -45,7 +46,7 @@ try{
     });
 }catch(e){
     program.nojira = true;
-    console.log("Jira Connection not possible");
+    console.log("Jira Connection to " + ENV["jira-url"] + " not possible with user " + ENV["jira-user"]);
 }
 
 function feature(id) {
@@ -131,8 +132,18 @@ function init(){
 }
 
 function test(v){
-    Git.getBranch().then(function(b){
-        Git.push("origin",b,["--set-upstream"]);
+    console.log("Testing...");
+}
+
+function testJira(){
+    jira.issue.getIssue({
+        issueKey: ENV.project +  id
+    }, function(error, issue) {
+        if(error){
+            console.log("Error: ", error);
+        }else{
+            console.log("Found Jira: ", ENV.project +  id + ":" + issue.fields.summary);
+        }
     });
 }
 
@@ -144,21 +155,10 @@ function config(pair){
 
 function publish(target){
     Git.getBranch().then(function(b){
-        if(target.toUpperCase() == ENV.prod.toUpperCase()){
-            console.log("Merging " + b + " into " + ENV.prod);
-            Git.mergeFromTo(b , ENV.prod ).then(function(){
-                console.log("pushing " + ENV.prod);
-                Git.push(ENV.prod);
-            });
-
-
-        }else if(target.toUpperCase() == ENV.int.toUpperCase()){
-            Git.mergeFromTo(b, ENV.int);
-            Git.push(ENV.int);
-        }else{
-            Git.mergeFromTo(b, ENV.dev);
-            Git.push(ENV.dev);
-        }
+        Git.checkout(target);
+        Git.merge(b);
+        console.log("Merged " + b + " into " + target);
+        Git.checkout(b);
     });
 }
 
