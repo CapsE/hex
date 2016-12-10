@@ -7,8 +7,20 @@ var fs = require('fs');
 var path = require('path')
 
 var $PATH = process.cwd();
-var ENV = require('./hex-config');
-var local_env = require($PATH + '/hex-config');
+try{
+    var ENV = require('./hex-config');
+}catch(e){
+    console.log("No global ENV");
+    var ENV = {};
+}
+
+try{
+    var local_env = require($PATH + '/hex-config');
+}catch(e){
+    console.log("No local ENV");
+    var local_env = {};
+}
+
 
 for(var key in local_env){
     ENV[key] = local_env[key];
