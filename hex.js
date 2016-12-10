@@ -1,5 +1,5 @@
 /**
- * Created by Lars on 17.10.2016.
+ * Created by Lars on 17.10.2016. DEV
  */
 
 var JiraClient = require('jira-connector');
@@ -37,7 +37,7 @@ var VALUE = program.args[1] || "";
 
 try{
     var jira = new JiraClient( {
-        host: ENV["jira-url"],
+        host: ENV[jira-url],
         basic_auth: {
             username: ENV["jira-user"],
             password: ENV["jira-password"]
@@ -49,6 +49,7 @@ try{
 }
 
 function feature(id) {
+    checkout(ENV["prod"]);
     if(program.nojira){
         var ex = /[0-9]+/.test(id);
         if(ex){
