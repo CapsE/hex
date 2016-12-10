@@ -169,7 +169,7 @@ function publish(target){
         console.log("Merged " + b + " into " + target);
         //Git.push(target);
         //Git.checkout(b);
-        if(target.toUpperCase() == ENV.dev.toUpperCase()){
+        if(target== ENV.dev){
             transition("DeliverDEV", "Published to " + ENV.dev, ENV["project-owner"])
         }
     });
