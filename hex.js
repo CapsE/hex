@@ -4,11 +4,12 @@
 
 var JiraClient = require('jira-connector');
 var fs = require('fs');
-var path = require('path')
+var path = require('path');
 
 var $PATH = process.cwd();
+var $APP_DATA = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local');
 try{
-    var ENV = require('./hex-config');
+    var ENV = require($APP_DATA + '/hex/hex-config');
 }catch(e){
     console.log("No global ENV");
     var ENV = {};
@@ -162,7 +163,7 @@ function testJira(){
 function config(pair){
     var p = pair.split(":");
     ENV[p[0]] = p[1];
-    fs.writeFile(path.resolve(__dirname, "hex-config.json"), JSON.stringify(ENV, null, ' '));
+    fs.writeFile(path.resolve($APP_DATA + "/hex", "hex-config.json"), JSON.stringify(ENV, null, ' '));
 }
 
 function publish(target){
