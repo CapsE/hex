@@ -18,7 +18,7 @@ try{
 try{
     var local_env = require($PATH + '/hex-config');
 }catch(e){
-    console.log("No local ENV");
+    console.log("No local ENV", e);
     var local_env = {};
 }
 
@@ -149,18 +149,7 @@ function init(){
 
 function test(v){
     console.log("Testing...");
-}
-
-function testJira(){
-    jira.issue.getIssue({
-        issueKey: ENV.project +  id
-    }, function(error, issue) {
-        if(error){
-            console.log("Error: ", error);
-        }else{
-            console.log("Found Jira: ", ENV.project +  id + ":" + issue.fields.summary);
-        }
-    });
+    transition("DeliverPROD", "Testnachrich");
 }
 
 function config(pair){
@@ -175,6 +164,76 @@ function publish(target){
         Git.mergeFromTo(b, target);
         console.log("Merged " + b + " into " + target);
         Git.checkout(b);
+    });
+}
+
+function info() {
+    Git.getBranch().then(function(b){
+        jira.issue.getIssue({
+            issueKey: b
+        }, function(error, issue) {
+            if(error){
+                console.log("Error: ", error);
+            }else{
+                console.log(issue);
+            }
+        });
+    });
+}
+
+function assignIssue(person) {
+    if(!person){
+        person = ENV["project-owner"];
+    }
+    if(!person){
+        console.log("No person defined! Write a name or set a project-owner");
+        return;
+    }
+
+    Git.getBranch().then(function(b){
+        jira.issue.assignIssue({
+            issueKey: b,
+            assignee: person
+
+        }, function(error, issue) {
+            if(error){
+                console.log("Error: ", error);
+            }else{
+                console.log("Done");
+            }
+        });
+    });
+}
+
+function transition(key, msg, person){
+    Git.getBranch().then(function(b){
+        var params = {
+            issueKey: b,
+            transition:{
+                id: ENV["states"][key]
+            }
+        };
+        if(msg){
+            params.update = {comment:[{
+                add: {
+                    body: "[hex] " + msg
+                }
+            }]};
+        }
+        if(person){
+            params.fields = {
+                assignee:{
+                    name: person
+                }
+            }
+        }
+        jira.issue.transitionIssue(params, function(error, issue) {
+            if(error){
+                console.log("Error: ", error);
+            }else{
+                console.log(issue);
+            }
+        });
     });
 }
 
@@ -202,6 +261,12 @@ switch(CMD) {
         break;
     case "test":
         test(VALUE);
+        break;
+    case "info":
+        info();
+        break;
+    case "assign" || "a":
+        assignIssue(VALUE);
         break;
     default:
         console.log("Unknown Command");
