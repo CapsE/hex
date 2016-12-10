@@ -167,8 +167,8 @@ function publish(target){
         Git.checkout(target);
         Git.mergeFromTo(b, target);
         console.log("Merged " + b + " into " + target);
+        Git.push(target);
         Git.checkout(b);
-        Git.push(b);
         if(target.toUpperCase() == ENV.dev.toUpperCase()){
             transition("DeliverDEV", "Published to " + ENV.dev, ENV["project-owner"])
         }
