@@ -15,11 +15,15 @@ try{
     var ENV = {};
 }
 
+var local_env_exitsts = false;
+
 try{
     var local_env = require($PATH + '/hex-config');
+    local_env_exitsts = true;
 }catch(e){
-    console.log("No local ENV", e);
+    console.log("No local ENV");
     var local_env = {};
+    local_env_exitsts = false;
 }
 
 
@@ -121,34 +125,38 @@ function branch(){
 }
 
 function init(){
-    var branch;
-    Git.getBranch().then(function(b){
-        branch = b;
-        return Git.getBanchList();
-    }).then(function(list){
-        console.log("Setting up branches");
-        if(list.indexOf(ENV.dev) == -1){
-            Git.checkoutBranch(ENV.dev, "master");
-            Git.push("--set-upstream origin " + ENV.dev);
-        }
-        if(list.indexOf(ENV.int) == -1){
-            Git.checkoutBranch(ENV.int, "master");
-            Git.push("--set-upstream origin " + ENV.int);
-        }
-        if(list.indexOf(ENV.prod) == -1){
-            Git.checkoutBranch(ENV.prod, "master");
-            Git.push("--set-upstream origin " + ENV.prod);
-        }
-        Git.checkout(branch);
-        console.log("Setting up Git-Hooks");
-        fs.readdir(path.resolve(__dirname, "hooks"), (err, files) => {
-            files.forEach(file => {
-                console.log(file);
-                fs.createReadStream(__dirname + "/hooks/" + file)
-                    .pipe(fs.createWriteStream("./.git/" + "hooks/" + file));
+    if(local_env_exitsts){
+        var branch;
+        Git.getBranch().then(function(b){
+            branch = b;
+            return Git.getBanchList().catch(function(){
+                console.log("This doesn't seem to be a git repository.");
+            });
+        }).then(function(list){
+            console.log("Setting up branches");
+            if(list.indexOf(ENV.dev) == -1){
+                Git.checkoutBranch(ENV.dev, "master");
+            }
+            if(list.indexOf(ENV.int) == -1){
+                Git.checkoutBranch(ENV.int, "master");
+            }
+            if(list.indexOf(ENV.prod) == -1){
+                Git.checkoutBranch(ENV.prod, "master");
+            }
+            Git.checkout(branch);
+            console.log("Setting up Git-Hooks");
+            fs.readdir(path.resolve(__dirname, "hooks"), (err, files) => {
+                files.forEach(file => {
+                    console.log(file);
+                    fs.createReadStream(__dirname + "/hooks/" + file)
+                        .pipe(fs.createWriteStream("./.git/" + "hooks/" + file));
+                });
             });
         });
-    });
+    }else{
+        fs.createReadStream(path.resolve(__dirname, "hex-config.json")).pipe(fs.createWriteStream('./hex-config.json'));
+        console.log("Added a hex-config.json pleas adjust your settings in that file and run \"hex init\" again")
+    }
 }
 
 function test(v){
