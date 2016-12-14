@@ -297,7 +297,7 @@ switch(CMD) {
     case "init":
         init();
         break;
-    case "pub" || "publish":
+    case "pub":
         publish(VALUE);
         break;
     case "test":
@@ -306,7 +306,7 @@ switch(CMD) {
     case "info":
         info();
         break;
-    case "assign" || "a":
+    case "assign":
         assignIssue(VALUE);
         break;
     default:
