@@ -16,12 +16,10 @@ So for example
 
 make sure to not include the http:// or https:// in your url
 
-Set the "jira-user" and "jira-password" in the same way.
-> hex config jira-user:<jira-user>
+Set the "jira-user" and "jira-password" with.
+> hex login <jira-user>:<jira-password>
 
-> hex config jira-password:<jira-password>
-
-Careful: The password will be clean text (I'm working on it)
+This will encode your password and store it globally.
 
 As an alternative to these steps you could also go and edit the file %APPDATA%/hex/hex-config.json
 
