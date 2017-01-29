@@ -55,13 +55,22 @@ var CMD = program.args[0] || "";
 var VALUE = program.args[1] || "";
 
 try{
-    var jira = new JiraClient( {
-        host: ENV["jira-url"],
-        basic_auth: {
-            username: ENV["jira-user"],
-            password: ENV["jira-password"]
-        }
-    });
+    if(ENV["jira-auth"]){
+        var jira = new JiraClient( {
+            host: ENV["jira-url"],
+            basic_auth: {
+                base64: ENV["jira-auth"]
+            }
+        });
+    }else if(ENV["jira-password"]){
+        var jira = new JiraClient( {
+            host: ENV["jira-url"],
+            basic_auth: {
+                username: ENV["jira-user"],
+                password: ENV["jira-password"]
+            }
+        });
+    }
 }catch(e){
     program.nojira = true;
     console.log("Jira Connection to " + ENV["jira-url"] + " not possible with user " + ENV["jira-user"]);
@@ -294,7 +303,6 @@ function configJiraLogin(string){
             g["jira-auth"] = base64.encode(string);
             g["jira-password"] = "";
             g["jira-user"] = string.split(":")[0];
-            console.log(g);
             fs.writeFile(path.resolve($APP_DATA + "/hex", "hex-config.json"), JSON.stringify(g, null, ' '));
         }else{
             console.log(err);
