@@ -3,8 +3,9 @@
   "version": "1.0.4",
   "description": "A git wrapper for web workflows",
   "main": "hex.js",
-  "repository":"https://github.com/CapsE/hex.git",
+  "repository": "https://github.com/CapsE/hex.git",
   "dependencies": {
+    "base-64": "^0.1.0",
     "commander": "^2.9.0",
     "jira-connector": "^2.4.0",
     "prompt": "^1.0.0",

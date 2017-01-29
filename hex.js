@@ -3,6 +3,7 @@
  */
 
 var JiraClient = require('jira-connector');
+var base64 = require('base-64');
 var fs = require('fs');
 var path = require('path');
 
@@ -286,6 +287,21 @@ function transition(input){
     return promise;
 }
 
+function configJiraLogin(string){
+    fs.readFile($APP_DATA + '/hex/hex-config.json', {encoding: 'utf-8'}, function(err,data){
+        if (!err){
+            var g = JSON.parse(data);
+            g["jira-auth"] = base64.encode(string);
+            g["jira-password"] = "";
+            g["jira-user"] = string.split(":")[0];
+            console.log(g);
+            fs.writeFile(path.resolve($APP_DATA + "/hex", "hex-config.json"), JSON.stringify(g, null, ' '));
+        }else{
+            console.log(err);
+        }
+    });
+}
+
 switch(CMD) {
     case "f":
         feature(VALUE);
@@ -301,6 +317,9 @@ switch(CMD) {
         break;
     case "config":
         config(VALUE);
+        break;
+    case "login":
+        configJiraLogin(VALUE);
         break;
     case "init":
         init();
