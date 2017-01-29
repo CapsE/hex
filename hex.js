@@ -345,7 +345,7 @@ switch(CMD) {
         assignIssue(VALUE);
         break;
     default:
-        console.log("Unknown Command");
+        Git.command("git " + CMD, VALUE);
 }
 
 //I was published :)
